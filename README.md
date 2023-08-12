@@ -30,7 +30,7 @@ The project consists of two main components:
 1. **Clone the Repository**:
     ```bash
     git clone [https://github.com/your-github-username/digit-recognizer-gui.git](https://github.com/ayushpatel2002/Handwriting-Recognition)
-    cd digit-recognizer-gui
+    cd Handwriting-Recognition
     ```
 
 2. **Install Dependencies**:
