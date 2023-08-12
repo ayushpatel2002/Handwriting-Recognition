@@ -9,7 +9,7 @@
 - [Acknowledgments](#acknowledgments)
 
 ## Description
-**Digit Recognizer GUI** is an interactive application that allows users to draw handwritten digits and get real-time predictions on what the digit is. Utilizing the power of convolutional neural networks (CNN) trained on the MNIST dataset, this application provides a seamless experience for users to test and visualize the capabilities of deep learning models in recognizing handwritten digits.
+**Handwriting-Recognition** is an interactive application that allows users to draw handwritten digits and get real-time predictions on what the digit is. Utilizing the power of convolutional neural networks (CNN) trained on the MNIST dataset, this application provides a seamless experience for users to test and visualize the capabilities of deep learning models in recognizing handwritten digits.
 
 The project consists of two main components:
 1. **Training Notebook (`main.ipynb`)**: This Jupyter notebook walks through the process of loading the MNIST dataset, preprocessing the data, defining the CNN model architecture, training the model, and evaluating its performance.
