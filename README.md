@@ -7,7 +7,6 @@
 - [Getting Started](#getting-started)
 - [Training the Model](#training-the-model)
 - [Acknowledgments](#acknowledgments)
-- [License](#license)
 
 ## Description
 **Digit Recognizer GUI** is an interactive application that allows users to draw handwritten digits and get real-time predictions on what the digit is. Utilizing the power of convolutional neural networks (CNN) trained on the MNIST dataset, this application provides a seamless experience for users to test and visualize the capabilities of deep learning models in recognizing handwritten digits.
@@ -36,7 +35,7 @@ The project consists of two main components:
 
 2. **Install Dependencies**:
     ```bash
-    pip install numpy tensorflow keras pillow
+    pip install numpy, tensorflow, keras, pillow
     ```
 
 3. **Run the Application**:
@@ -49,7 +48,3 @@ If you're interested in understanding the training process or wish to retrain th
 
 ## Acknowledgments
 - The MNIST dataset provided by the Keras library served as the foundation for training the model.
-- Special thanks to [relevant source or tutorial link] for guidance on model architecture and best practices.
-
-## License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
