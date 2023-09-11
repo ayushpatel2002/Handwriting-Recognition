@@ -1,62 +1,62 @@
-from keras.models import load_model
-from tkinter import *
+# GUI for digit recognition
+
 import tkinter as tk
-import win32gui
-from PIL import ImageGrab, Image
-import numpy as np
+from tkinter import Canvas
+from PIL import Image, ImageDraw
 
-model = load_model('mnist.h5')
+class DigitRecognizer(tk.Tk):
+    def __init__(self, model):
+        super().__init__()
 
-def predict_digit(img):
-    #resize image to 28x28 pixels
-    img = img.resize((28,28))
-    #convert rgb to grayscale
-    img = img.convert('L')
-    img = np.array(img)
-    #reshaping to support our model input and normalizing
-    img = img.reshape(1,28,28,1)
-    img = img/255.0
-    #predicting the class
-    res = model.predict([img])[0]
-    return np.argmax(res), max(res)
+        self.model = model
+        self.canvas_width = 280
+        self.canvas_height = 280
+        self.pen_width = 15
+        self.initialize_ui()
 
-class App(tk.Tk):
-    def __init__(self):
-        tk.Tk.__init__(self)
+    def initialize_ui(self):
+        self.canvas = Canvas(self, width=self.canvas_width, height=self.canvas_height, bg="white")
+        self.canvas.pack(pady=20)
 
-        self.x = self.y = 0
+        self.canvas.bind("<B1-Motion>", self.paint)
 
-        # Creating elements
-        self.canvas = tk.Canvas(self, width=300, height=300, bg = "white", cursor="cross")
-        self.label = tk.Label(self, text="Thinking..", font=("Helvetica", 48))
-        self.classify_btn = tk.Button(self, text = "Recognise", command =         self.classify_handwriting) 
-        self.button_clear = tk.Button(self, text = "Clear", command = self.clear_all)
+        clear_button = tk.Button(self, text="Clear Canvas", command=self.clear_canvas)
+        clear_button.pack(pady=20)
 
-        # Grid structure
-        self.canvas.grid(row=0, column=0, pady=2, sticky=W, )
-        self.label.grid(row=0, column=1,pady=2, padx=2)
-        self.classify_btn.grid(row=1, column=1, pady=2, padx=2)
-        self.button_clear.grid(row=1, column=0, pady=2)
+        recognize_button = tk.Button(self, text="Recognize Digit", command=self.recognize_digit)
+        recognize_button.pack(pady=20)
 
-        #self.canvas.bind("<Motion>", self.start_pos)
-        self.canvas.bind("<B1-Motion>", self.draw_lines)
+        self.label = tk.Label(self, text="Draw a digit...", font=("Helvetica", 16))
+        self.label.pack(pady=20)
 
-    def clear_all(self):
+    def paint(self, event):
+        x, y = event.x, event.y
+        self.canvas.create_oval((x, y, x + self.pen_width, y + self.pen_width), fill="black", width=0)
+
+    def clear_canvas(self):
         self.canvas.delete("all")
 
-    def classify_handwriting(self):
-        HWND = self.canvas.winfo_id() # get the handle of the canvas
-        rect = win32gui.GetWindowRect(HWND) # get the coordinate of the canvas
-        im = ImageGrab.grab(rect)
+    def recognize_digit(self):
+        # Get the canvas content as an image
+        canvas_image = Image.new("RGB", (self.canvas_width, self.canvas_height), "white")
+        draw = ImageDraw.Draw(canvas_image)
+        for item in self.canvas.find_all():
+            x0, y0, x1, y1 = self.canvas.coords(item)
+            draw.ellipse([x0, y0, x1, y1], fill="black")
 
-        digit, acc = predict_digit(im)
-        self.label.configure(text= str(digit)+', '+ str(int(acc*100))+'%')
+        digit, confidence = self.predict_digit(canvas_image)
+        self.label.config(text=f"Predicted Digit: {digit} (Confidence: {confidence:.2f}%)")
 
-    def draw_lines(self, event):
-        self.x = event.x
-        self.y = event.y
-        r=8
-        self.canvas.create_oval(self.x-r, self.y-r, self.x + r, self.y + r, fill='black')
+    def predict_digit(self, img):
+        img = img.resize((28, 28))
+        img = img.convert('L')
+        img = np.array(img)
+        img = img.reshape(1, 28, 28, 1)
+        img = img / 255.0
+        prediction = self.model.predict([img])[0]
+        return np.argmax(prediction), max(prediction) * 100
 
-app = App()
-mainloop()
+# Running the GUI
+app = DigitRecognizer(model)
+app.title("Handwritten Digit Recognizer")
+app.mainloop()
